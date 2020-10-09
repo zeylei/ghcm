@@ -1,0 +1,109 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: PY
+  name: 矧码拼音反查
+  version: 0.0
+  author:
+    - 矧可射思
+  description: 矧码拼音反查
+  dependencies:
+    - symbols
+style:
+  horizontal: true
+
+switches:
+  - name: full_shape
+    states: [  半, 全  ]
+    reset: 0
+  - name: spelling
+    reset: 0
+    states: [  码, 音  ]
+  - name: zh_simp
+    reset: 0
+    states: [  简, 繁  ]
+  - name: gb2312
+    reset: 0
+    states: [  扩, 常  ]
+  - name: ascii_mode
+    reset: 0
+    states: [  中, 英  ]
+  - name: _hide_candidate
+    reset: 1
+    states: ["✿", "❀"]
+  - name: ascii_punct
+    states: ["。", "．"]
+    reset: 0
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"
+  algebra:
+    - abbrev/^([a-z]).+$/$1/
+    - abbrev/^([zcs]h).+$/$1/
+    - derive/^([nl])ue$/$1ve/
+    - derive/^([jqxy])u/$1v/
+    - derive/un$/uen/
+    - derive/ui$/uei/
+    - derive/iu$/iou/
+    - derive/([aeiou])ng$/$1gn/
+    - derive/([dtngkhrzcs])o(u|ng)$/$1o/
+    - derive/ong$/on/
+    - derive/ao$/oa/
+    - derive/([iu])a(o|ng?)$/a$1$2/
+
+translator:
+  dictionary: PY
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+
+
+
+menu:
+  page_size: 10
+punctuator:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+  bindings:
+    - {accept: semicolon, send: 2, when: has_menu}
+    - {accept: apostrophe, send: 3, when: has_menu}
+    - { when: has_menu, accept: comma, send: comma }
+    - { when: has_menu, accept: period, send: period } 
+    - {accept: "Control+Shift+O", toggle: full_shape, when: always} 
+    - {accept: "Control+Shift+U", toggle: spelling, when: always} 
+    - {accept: "Control+Shift+Y", toggle: spelling, when: always}
+    - {accept: "Control+Shift+K", toggle: spelling, when: always}
+    - {accept: "Control+Shift+E", toggle: ascii_mode, when: always} 
+    - {accept: "Control+space", toggle: ascii_mode, when: always} 
+    - {accept: "Control+Shift+J", toggle: zh_simp, when: always}
+    - {accept: "Control+Shift+G", toggle: gb2312, when: always} 
+    - {accept: "Control+Shift+H", toggle: _hide_candidate, when: always} 
+    - {accept: "Control+period", toggle: ascii_punct, when: always} 
+
+recognizer:
+  import_preset: default

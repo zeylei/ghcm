@@ -1,0 +1,168 @@
+﻿schema:
+  author:
+    - "矧可射思"
+  dependencies:
+    - PY
+  description: 矧码
+  name: 矧码
+  schema_id: SM
+  version: 0x00
+
+customization: 342890
+
+engine:
+  processors:
+    - lua_processor@test
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - history_translator
+    - reverse_lookup_translator@pinyin
+    - table_translator
+    - history_translator@historyX
+  filters:
+    - charset_filter@gb2312  
+    - simplifier
+    - simplifier@zh_simp
+    - simplifier@chai
+
+key_binder:
+  bindings:
+    - {accept: e, send: 2, when: has_menu}
+    - {accept: x, send: 3, when: has_menu}
+    - {accept: backslash, send: 4, when: has_menu}
+    - {accept: 2, send: 5, when: has_menu}
+    - {accept: 3, send: 6, when: has_menu}
+    - {accept: 4, send: 7, when: has_menu}
+    - {accept: 8, send: 8, when: has_menu}
+    - {accept: 9, send: 9, when: has_menu}
+    - {accept: 0, send: 0, when: has_menu}
+    - {accept: Return, send: Escape, when: has_menu}
+    #↓以下爲全角开关.
+    - {accept: "Control+Shift+O", toggle: full_shape, when: always} 
+    #↓以下爲打简出繁开关.
+    - {accept: "Control+Shift+J", toggle: zh_simp, when: always}
+    #↓以下爲中英文开关.
+    - {accept: "Control+Shift+E", toggle: ascii_mode, when: always} 
+    - {accept: "Control+Shift+N", toggle: ascii_mode, when: always} 
+    #↓以下爲字符集过滤.
+    - {accept: "Control+Shift+U", toggle: gb2312, when: always} 
+    #↓以下爲_hide_candidate开关.
+    - {accept: "Control+Shift+H", toggle: _hide_candidate, when: always} 
+    #↓以下爲标点符号全角开关.
+    - {accept: "Control+Shift+.", toggle: ascii_punct, when: always}
+
+  import_preset: default
+
+menu:
+  alternative_select_labels: [ _, e, x, C, 2, 3, 4, 8, 9, 0]
+  page_size: 10
+
+punctuator:
+  import_preset: symbols
+  half_shape:
+    'i' : { commit: ， }
+    '''': { commit: 。 }
+    ',': [ '#', ；]
+  
+recognizer:
+  patterns:
+    pinyin: "`[a-z]*'?"
+
+pinyin:
+  tag: pinyin
+  dictionary: PY
+  preedit_format:
+    - "xform/([nl])v/$1ü/"
+    - "xform/([nl])ue/$1üe/"
+    - "xform/([jqxy])v/$1u/"
+  prefix: "`"
+  suffix: "'"
+  tips: "〔拼音〕"
+
+speller:
+  alphabet: yupgs;ctvr/bwlnhjdlfmkzq.oa,
+  max_code_length: 4
+  auto_select: true
+  auto_select_unique_candidate: true
+  auto_select_pattern: ^.{4}$|^,.$
+  delimiter: "~"
+
+style:
+  horizontal: true
+
+switches:
+  - name: full_shape
+    states: [  半, 全  ]
+    reset: 0
+  - name: zh_simp
+    reset: 0
+    states: [  简, 繁  ]
+  - name: chai
+    reset: 1
+    states: [  不, 拆   ]
+  - name: ascii_mode
+    reset: 0
+    states: [  中, 英  ]
+  - name: gb2312
+    reset: 0
+    states: [  扩,常  ]
+  - name: _hide_candidate
+    reset: 1
+    states: ["✿", "❀"]
+  - name: ascii_punct
+    states: ["。", "．"]
+    reset: 0
+
+translator:
+  dictionary: SM
+  enable_charset_filter: false
+  enable_completion: false
+  enable_encoder: false
+  enable_sentence: false
+  enable_user_dict: false
+  encode_commit_history: false
+  max_phrase_length: 4
+  always_show_comments: true
+
+historyX:
+  input: ','
+  size: 1
+  initial_quality: -1
+  
+zh_simp:
+  opencc_config: s2t.json
+  option_name: s2t_segestion
+  tags:
+    - abc
+  tips: char
+  
+simplifier:
+  opencc_config: s2twp.json
+  option_name: zh_simp
+  tags: [ abc ]
+  tips: none
+
+chai:
+  opencc_config: chai.json
+  option_name: chai
+  show_in_comment: true
+  comment_format:
+    - "xform/☯/ · /"    
+    - "xform/<br>/\r/"
+  tags:
+    - pinyin
+  tips: char
