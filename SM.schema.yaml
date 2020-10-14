@@ -50,7 +50,7 @@ key_binder:
     - {accept: 8, send: 8, when: has_menu}
     - {accept: 9, send: 9, when: has_menu}
     - {accept: 0, send: 0, when: has_menu}
-    - {accept: Return, send: Escape, when: has_menu}
+    - {accept: Return, send: Escape, when: composing}
     #↓以下爲全角开关.
     - {accept: "Control+Shift+O", toggle: full_shape, when: always} 
     #↓以下爲打简出繁开关.
@@ -64,7 +64,6 @@ key_binder:
     - {accept: "Control+Shift+H", toggle: _hide_candidate, when: always} 
     #↓以下爲标点符号全角开关.
     - {accept: "Control+Shift+.", toggle: ascii_punct, when: always}
-
   import_preset: default
 
 menu:
@@ -76,7 +75,7 @@ punctuator:
   half_shape:
     'i' : { commit: ， }
     '''': { commit: 。 }
-    ',': [ '#', ；]
+    ',': [ 、,；,'#']
   
 recognizer:
   patterns:
