@@ -41,33 +41,20 @@ engine:
 
 key_binder:
   bindings:
-    - {accept: e, send: 2, when: has_menu}
-    - {accept: x, send: 3, when: has_menu}
-    - {accept: backslash, send: 4, when: has_menu}
-    - {accept: 2, send: 5, when: has_menu}
-    - {accept: 3, send: 6, when: has_menu}
-    - {accept: 4, send: 7, when: has_menu}
-    - {accept: 8, send: 8, when: has_menu}
-    - {accept: 9, send: 9, when: has_menu}
-    - {accept: 0, send: 0, when: has_menu}
+    - {accept: "[", send: "C", when: composing}
     - {accept: Return, send: Escape, when: composing}
-    #↓以下爲全角开关.
     - {accept: "Control+Shift+O", toggle: full_shape, when: always} 
-    #↓以下爲打简出繁开关.
     - {accept: "Control+Shift+J", toggle: zh_simp, when: always}
-    #↓以下爲中英文开关.
     - {accept: "Control+Shift+E", toggle: ascii_mode, when: always} 
     - {accept: "Control+Shift+N", toggle: ascii_mode, when: always} 
-    #↓以下爲字符集过滤.
     - {accept: "Control+Shift+U", toggle: gb2312, when: always} 
-    #↓以下爲_hide_candidate开关.
     - {accept: "Control+Shift+H", toggle: _hide_candidate, when: always} 
-    #↓以下爲标点符号全角开关.
     - {accept: "Control+Shift+.", toggle: ascii_punct, when: always}
   import_preset: default
 
 menu:
   alternative_select_labels: [ _, e, x, C, 2, 3, 4, 8, 9, 0]
+  alternative_select_keys: "_exC234890"
   page_size: 10
 
 punctuator:
@@ -75,7 +62,10 @@ punctuator:
   half_shape:
     'i' : { commit: ， }
     '''': { commit: 。 }
-    ',': [ 、,；,'#']
+    ',' : []
+    '.' : []
+    '/' : []
+    ';' : []
   
 recognizer:
   patterns:
